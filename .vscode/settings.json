@@ -1,0 +1,5 @@
+{
+    "editor.wordWrap": "on",
+    "diffEditor.wordWrap": "on",
+    "terminal.integrated.wordSeparators": " ()[]{}',\"`─‘’“”|;"
+}
