@@ -80,9 +80,9 @@ userSchema.methods.generateAccessToken = function () {
         }
     )
 }
+// Generating Refresh by JWT
 
-
-userSchema.method.generateRefreshToken = function () {
+userSchema.methods.generateRefreshToken = function () {
     jwt.sign({
         _id: this._id
     },
