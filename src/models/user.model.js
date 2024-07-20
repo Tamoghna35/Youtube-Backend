@@ -48,8 +48,7 @@ const userSchema = new Schema({
     }
 }, { timestamps: true })
 
-// here we use pre hook to encrypt the data . And at the same time I also check only for passsword update
-// the password field should encrypt or not
+// here we use pre hook to encrypt the data . And at the same time I also check only for passsword update the password field should encrypt or not
 
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
