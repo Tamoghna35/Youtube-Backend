@@ -60,13 +60,15 @@ userSchema.pre("save", async function (next) {
 // Now we need to cmopare the encypted password and actual password
 
 userSchema.methods.isPasswordCorrect = async function (password) {
+    console.log('Password:', password);  // Log plain text password
+    console.log('Hashed Password:', this.password); 
     return await bcrypt.compare(password, this.password)
 }
 
 // Generating Access_Token by JWT
 
 userSchema.methods.generateAccessToken = function () {
-    jwt.sign(
+   return jwt.sign(
         {
             _id: this._id,
             email: this.email,
@@ -82,12 +84,12 @@ userSchema.methods.generateAccessToken = function () {
 // Generating Refresh by JWT
 
 userSchema.methods.generateRefreshToken = function () {
-    jwt.sign({
+   return jwt.sign({
         _id: this._id
     },
         process.env.REFRESH_TOKEN_SECRET,
         {
-            expiresIn: this.process.env.REFRESH_TOKRN_EXPIRY
+            expiresIn:process.env.REFRESH_TOKRN_EXPIRY
         }
     )
 }
