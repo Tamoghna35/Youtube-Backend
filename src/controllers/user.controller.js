@@ -234,10 +234,87 @@ const changeCurrentUserPassword = asyncHandler(async (req, res) => {
     
 })
 
+const getCurrentUser = asyncHandler(async (req, res) => {
+    return res
+        .status(200)
+        .json( new ApiResponse( 200, req.user, "User details fetched successfully"))
+})
+
+const updateUser = asyncHandler(async (req, res) => {
+    const { fullName, email } = req.body;
+    if (!fullName || !email) {
+        throw new ApiError(400, "Both the fields are requird")
+    }
+    const user = User.findByIdAndDelete(
+        req.user?._id,
+        {
+            $set: {
+                fullName,
+                email
+            }
+        },
+        { new: true }
+    ).select("-password")
+
+    return res
+        .status(200)
+    .json(new ApiResponse(200, user,"Data updated Succesfully"))
+})
+
+const updateAvatar = asyncHandler(async (req, res) => {
+    const avatarLocalPath = req.file?._id
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avater file is not available")
+    }
+    const avatar = await uploadCloudinary(avatarLocalPath)
+
+    if (!avatar.url) {
+        throw new ApiError(400, "Error while uploading the file")
+    }
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            avatar: avatar.url
+        },
+        {new: true}
+    ).select("-password")
+
+    return res.status(200)
+    .json(new ApiResponse(200, user, "Avatar is updated Successfully"))
+})
+
+const updateCoverImage = asyncHandler(async (req, res) => {
+    const coverImagelocalPath = req.file?._id
+
+    if (!coverImagelocalPath) {
+        throw new ApiError(400, "CoverImage not found")
+    }
+    const coverImage = await uploadCloudinary(coverImagelocalPath)
+    if (!coverImage.url) {
+        throw new ApiError(400,"CoverImage url is not present")
+    }
+   const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                coverImage:coverImage.url
+            }
+        },
+        {new: true}
+    ).select("-password")
+
+    return res.status(200)
+    .json(new ApiResponse(200, user, "CoverImage upload successfully"))
+})
+
 export {
     registerUser,
     logInUser,
     logoutUser,
     generateNewAccessToken,
-    changeCurrentUserPassword
+    changeCurrentUserPassword,
+    getCurrentUser,
+    updateUser,
+    updateAvatar,
+    updateCoverImage
 }
